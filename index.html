@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Irisia ProjectのBert-VITS2の学習結果</title>
+    <style>
+        .container {
+            margin: 20px;
+        }
+
+        .audio-player {
+            margin-top: 10px;
+        }
+
+        /* 新しいスタイル */
+        select,
+        button {
+            font-size: 1.2em;
+            /* フォントサイズを大きくする */
+            padding: 5px 10px;
+            /* パディングを追加 */
+        }
+
+        button {
+            cursor: pointer;
+            /* ボタンにカーソルをポインターにする */
+            background-color: #f8f8f8;
+            /* ボタンの背景色 */
+            border: 1px solid #ddd;
+            /* ボタンの境界線 */
+            border-radius: 5px;
+            /* 境界線の丸み */
+        }
+
+        button:hover {
+            background-color: #e8e8e8;
+            /* ホバー時の背景色 */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2><a href="https://www.irisiaproject.com/">Irisia Project</a>のBert-VITS2の学習結果</h2>
+        <p>女性声優によるキャラクター演技音声のデータセットを提供している<a href="https://www.irisiaproject.com/">Irisia
+                Project</a>のコーパスを利用して、テキスト合成音声TTSのライブラリ<a
+                href="https://github.com/fishaudio/Bert-VITS2">Bert-VITS2</a>を使って学習した結果の、合成された出力音声の結果まとめです。<br>
+            手動人力xyplotともいいます。
+        </p>
+
+        <!-- 再生選択と原稿選択 -->
+        <label for="playbackType">再生タイプ:</label>
+        <select id="playbackType">
+            <option value="single">単一サンプル</option>
+            <option value="compare">二つを比較</option>
+        </select>
+
+        <label for="scriptSelect">原稿:</label>
+        <select id="scriptSelect"></select>
+
+        <!-- 原稿内容表示 -->
+        <div id="scriptContent" style="margin-top: 20px;">
+            <h3>選択された原稿の内容</h3>
+            <p id="selectedScript">原稿を選択してその内容を表示します。</p>
+        </div>
+
+        <!-- サンプル1のオプション -->
+        <div id="sample1">
+            <h3>サンプル1のオプション</h3>
+            <label for="steps1">ステップ数:</label>
+            <select id="steps1"></select>
+            <div class="audio-player" id="audioPlayer1">
+                <audio controls id="audio1"></audio>
+            </div>
+        </div>
+
+        <!-- サンプル2のオプション（初期非表示） -->
+        <div id="sample2" style="display: none;">
+            <h3>サンプル2のオプション</h3>
+            <label for="steps2">ステップ数:</label>
+            <select id="steps2"></select>
+            <div class="audio-player" id="audioPlayer2">
+                <audio controls id="audio2"></audio>
+            </div>
+        </div>
+
+        <div id="trainingInfo" style="margin-top: 20px;">
+            <h3>学習等詳細</h3>
+            <p>
+                <li><a
+                        href="https://github.com/fishaudio/Bert-VITS2/commit/c2fcc02984bd7184c03b486c794c348d849146ac">Bert-VITS2.1</a>使用
+                </li>
+                <li>設定：
+                    <a href="config.json" target="_blank">config.json</a>、変更はバッチサイズ(4)とログのインターバル(50)のみ。
+                </li>
+                <li>
+                    1kステップあたり約2.886エポック、100エポック終了扱い。
+                </li>
+                <li>学習時間：4070で5.45時間</li>
+                <li>学習データ：irisia_corpus_ver1のhigh_tension, low_tension, naturalから、ITAコーパスを取り除いた1422ファイル</li>
+                <li>推論設定：改行ごとに分けて生成、パラメータはデフォ</li>
+            </p>
+            <img src="log.jpg" alt="ロスのログ" width="1000">
+        </div>
+
+        <!-- ライセンス情報 -->
+        <div id="licenseInfo" style="margin-top: 20px;">
+            <h3>ライセンス情報</h3>
+            <p>
+                この音声はTTSの評価用に生成されたものであり、本音声を利用する場合は
+                <a href="https://www.irisiaproject.com/terms">Irisia Projectの生成音声利用規約</a>に準じてください。
+            </p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
