@@ -13,41 +13,53 @@ const scripts = {
     "音声合成は、機械学習を活用して、テキストから人の声を再現する技術です。この技術は、言語の構造を解析し、それに基づいて音声を生成します。<br>この分野の最新の研究成果を使うと、より自然で表現豊かな音声の生成が可能である。深層学習の応用により、感情やアクセントを含む声質の微妙な変化も再現することが出来る。",
 };
 
-// ステップ数、再生タイプ、原稿選択の変更イベントハンドラ
-document
-  .getElementById("steps1")
-  .addEventListener("change", updateAudioPlayers);
-document
-  .getElementById("steps2")
-  .addEventListener("change", updateAudioPlayers);
+// イベントハンドラに要素のIDを渡す
+document.getElementById("steps1").addEventListener("change", function () {
+  updateAudioPlayers("steps1");
+});
+document.getElementById("steps2").addEventListener("change", function () {
+  updateAudioPlayers("steps2");
+});
 document.getElementById("playbackType").addEventListener("change", function () {
-  updateAudioPlayers();
+  updateAudioPlayers("playbackType");
   const playbackType = this.value;
   const sample2 = document.getElementById("sample2");
   sample2.style.display = playbackType === "compare" ? "block" : "none";
 });
 document.getElementById("scriptSelect").addEventListener("change", function () {
-  updateScriptContent(this.value);
-  updateAudioPlayers();
+  updateAudioPlayers("scriptSelect");
 });
 
-// オーディオプレイヤーを更新する関数
-function updateAudioPlayers() {
+// オーディオプレイヤーを更新する関数に要素のIDを引数として追加
+function updateAudioPlayers(triggerElementId) {
   const script = document.getElementById("scriptSelect").value;
   const steps1 = document.getElementById("steps1").value;
   const steps2 = document.getElementById("steps2").value;
-  const audioFilePath1 = "audios/irisia-" + steps1 + "k-" + script + ".wav";
-  const audioFilePath2 = "audios/irisia-" + steps2 + "k-" + script + ".wav";
 
-  const audioPlayer1 = document.getElementById("audio1");
-  audioPlayer1.src = audioFilePath1;
-  audioPlayer1.load(); // 新しいソースでオーディオ1を再読み込み
+  // オーディオ1を更新する必要があるか判断
+  if (triggerElementId === "steps1" || triggerElementId === "scriptSelect") {
+    const audioFilePath1 = "audios/irisia-" + steps1 + "k-" + script + ".wav";
+    const audioPlayer1 = document.getElementById("audio1");
+    audioPlayer1.src = audioFilePath1;
+    audioPlayer1.load();
+    audioLink1.href = audioFilePath1; // リンクを更新
+    audioLink1.textContent = "Current File: " + audioFilePath1; // リンクテキストを更新
+  }
 
-  // 再生タイプが比較の場合のみサンプル2を更新
-  if (document.getElementById("playbackType").value === "compare") {
-    const audioPlayer2 = document.getElementById("audio2");
-    audioPlayer2.src = audioFilePath2;
-    audioPlayer2.load(); // 新しいソースでオーディオ2を再読み込み
+  // オーディオ2を更新する必要があるか判断（再生タイプが比較の場合のみ）
+  if (
+    triggerElementId === "steps2" ||
+    triggerElementId === "playbackType" ||
+    triggerElementId === "scriptSelect"
+  ) {
+    if (document.getElementById("playbackType").value === "compare") {
+      const audioFilePath2 = "audios/irisia-" + steps2 + "k-" + script + ".wav";
+      const audioPlayer2 = document.getElementById("audio2");
+      audioPlayer2.src = audioFilePath2;
+      audioPlayer2.load();
+      audioLink2.href = audioFilePath2; // リンクを更新
+      audioLink2.textContent = "Current File: " + audioFilePath2; // リンクテキストを更新
+    }
   }
 }
 
@@ -80,7 +92,7 @@ window.onload = function () {
   });
 
   updateScriptContent("hello");
-  updateAudioPlayers();
+  updateAudioPlayers("steps1");
 };
 
 // 再生タイプ変更の処理
